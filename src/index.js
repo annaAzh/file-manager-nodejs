@@ -1,5 +1,7 @@
 import readline from 'readline';
 import { greetingUser } from './args/args.js';
+import {changeCurrentDir} from './utils/homeDir.js'
+import {getCurrentWorkingDir} from './utils/currentDir.js'
 
 const startFileMasnager = () => {
 
@@ -9,11 +11,15 @@ const startFileMasnager = () => {
   });
   
   const userName = greetingUser();
+  changeCurrentDir();
+
   
   rl.on('line', (line) => {
     if (line.trim() === '.exit') {
       rl.close();
-    } 
+    } else {
+      process.stdout.write(`You are currently in ${getCurrentWorkingDir()}\n`)
+    }
   });
   
   rl.on('SIGINT', () => {
