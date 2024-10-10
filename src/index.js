@@ -1,7 +1,8 @@
 import readline from 'readline';
 import { greetingUser } from './args/args.js';
 import {changeCurrentDir} from './utils/homeDir.js'
-import {getCurrentWorkingDir} from './utils/currentDir.js'
+import {getCurrentWorkingDir} from './utils/currentDir.js';
+import {controller} from './utils/controller.js';
 
 const startFileMasnager = () => {
 
@@ -15,11 +16,8 @@ const startFileMasnager = () => {
 
   
   rl.on('line', (line) => {
-    if (line.trim() === '.exit') {
-      rl.close();
-    } else {
+      controller(line);
       process.stdout.write(`You are currently in ${getCurrentWorkingDir()}\n`)
-    }
   });
   
   rl.on('SIGINT', () => {
@@ -29,6 +27,10 @@ const startFileMasnager = () => {
   rl.on('close', () => {
     process.stdout.write(`Thank you for using File Manager, ${userName}, goodbye!\n`)
     process.exit(0);
+  })
+
+  process.on('exit', () => {
+    rl.close();
   })
   
 }
