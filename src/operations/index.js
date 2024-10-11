@@ -9,3 +9,4 @@ export {moveFile} from './mv.js';
 export {removeFile} from './rm.js';
 export {operationInfo} from './info.js';
 export {operationHash} from './hash.js';
+export {compressFile} from './compress.js'; 
