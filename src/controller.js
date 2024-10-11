@@ -1,9 +1,6 @@
-import {join, resolve} from 'path';
-import { chdir } from 'process';
-import { INVALID_INPUT, OPERATION_FAILED } from '../constants/constants.js';
-import {getCurrentWorkingDir} from './currentDir.js';
-import { getHomeDir } from './homeDir.js';
-import { readDir } from './operations/readDir.js';
+import { INVALID_INPUT, OPERATION_FAILED } from './constants/constants.js';
+import { getCurrentWorkingDir } from './utils/currentDir.js'; 
+import { readDir, addNewFile, upOperation, cdOperation } from './operations/index.js';
 
 export const controller = async(line) => {
   const [command, ...args] = line.trim().split(' ');
@@ -12,21 +9,21 @@ export const controller = async(line) => {
   try {
     switch(command) {
       case 'up': {
-        if (currentDirectory === getHomeDir()) {
-          return process.stdout.write(INVALID_INPUT);
-        }
-        const pathAbove = join(currentDirectory, '..');
-        chdir(pathAbove);
+        await upOperation(currentDirectory);
         break;
       }
       case 'cd': {
-        chdir(resolve(currentDirectory, args[0]));
+        await cdOperation(args[0], currentDirectory);
         break;
       } 
       case 'ls': {
         await readDir(currentDirectory);
         break;
       } 
+      case 'add': {
+        await addNewFile(args[0]);
+        break;
+      }
       case '.exit': {
         process.exit(0);
       } 

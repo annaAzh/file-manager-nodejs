@@ -1,8 +1,8 @@
 import readline from 'readline';
-import { greetingUser } from './args/args.js';
+import { greetingUser } from './utils/args.js';
 import {changeCurrentDir} from './utils/homeDir.js'
 import {getCurrentWorkingDir} from './utils/currentDir.js';
-import {controller} from './utils/controller.js';
+import {controller} from './controller.js';
 
 const startFileMasnager = () => {
 

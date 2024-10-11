@@ -1,5 +1,5 @@
 import { readdir } from 'fs/promises';
-import { OPERATION_FAILED } from '../../constants/constants.js';
+import { OPERATION_FAILED } from '../constants/constants.js';
 
 export const readDir = async (pathToDir) => {
 
