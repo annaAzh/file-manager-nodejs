@@ -1,6 +1,6 @@
 import { INVALID_INPUT, OPERATION_FAILED } from './constants/constants.js';
 import { getCurrentWorkingDir } from './utils/currentDir.js'; 
-import { readDir, addNewFile, upOperation, cdOperation, catOperation, renameFile, copyFile, moveFile } from './operations/index.js';
+import { readDir, addNewFile, upOperation, cdOperation, catOperation, renameFile, copyFile, moveFile, removeFile } from './operations/index.js';
 
 export const controller = async(line) => {
   const [command, ...args] = line.trim().split(' ');
@@ -44,6 +44,11 @@ export const controller = async(line) => {
         const pathToFile = args[0];
         const pathToNewDir = args[1];
         await moveFile(pathToFile, pathToNewDir);
+        break;
+      }
+      case 'rm': {
+        const pathToFile = args[0];
+        await removeFile(pathToFile);
         break;
       }
       case '.exit': {
