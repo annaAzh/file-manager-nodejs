@@ -1,30 +1,31 @@
 import os from 'os';
 import { OPERATION_FAILED, INVALID_INPUT } from '../constants/constants.js';
+import { coloredOutput, colors } from '../utils/coloredOutput.js';
 
 export const operationInfo = (arg) => {
   try {
     switch (arg.slice(2)) {
       case 'EOL': {
-        console.log(JSON.stringify(os.EOL))
+        process.stdout.write(coloredOutput(JSON.stringify(os.EOL), colors.green));
         break;
       }
       case 'cpus': {
         const cpusLength = os.cpus().length;
         const cpusInfo = os.cpus().map(({model, speed}) => ({model, speed}));
         console.table(cpusInfo);
-        console.log(`Amount of CPUS - ${cpusLength}`);
+        process.stdout.write(coloredOutput(`Amount of CPUS - ${cpusLength}`, colors.green));
         break;
       }
       case 'homedir': {
-        console.log(os.homedir())
+        process.stdout.write(coloredOutput(os.homedir(), colors.green));
         break;
       }
       case 'username': {
-        console.log(os.userInfo().username)
+        process.stdout.write(coloredOutput(os.userInfo().username, colors.green));
         break;
       }
       case 'architecture': {
-        console.log(os.arch())
+        process.stdout.write(coloredOutput(os.arch(), colors.green));
         break;
       }
       default: {

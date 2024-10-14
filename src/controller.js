@@ -1,19 +1,27 @@
 import { INVALID_INPUT, OPERATION_FAILED } from './constants/constants.js';
 import { getCurrentWorkingDir } from './utils/currentDir.js'; 
 import { readDir, addNewFile, upOperation, cdOperation, catOperation, renameFile, copyFile, moveFile, removeFile, operationInfo, operationHash, compressFile } from './operations/index.js';
+import {parsePath} from './utils/paths.js';
+import { coloredOutput, colors } from './utils/coloredOutput.js';
+
 
 export const controller = async(line) => {
-  const [command, ...args] = line.trim().split(' ');
+  const [command, ...rest] = line.trim().match(/'([^']*)'|"([^"]*)"|([^\s]+)/g).map(arg => arg.replace(/^['"]|['"]$/g, ''));
+  const args = rest.length > 0 ? [parsePath(rest[0]), ...rest.slice(1)] : [];
+
   const currentDirectory = getCurrentWorkingDir();
 
   try {
     switch(command) {
       case 'up': {
+        if (args.length > 0) {
+          throw new Error(INVALID_INPUT);
+        }
         await upOperation(currentDirectory);
         break;
       }
-      case 'cd': {
-        await cdOperation(args[0], currentDirectory);
+      case 'cd': { 
+        await cdOperation(parsePath(rest[0]), currentDirectory);
         break;
       } 
       case 'ls': {
@@ -42,7 +50,7 @@ export const controller = async(line) => {
       }
       case 'mv': {
         const pathToFile = args[0];
-        const pathToNewDir = args[1];
+        const pathToNewDir = parsePath(args[1]);
         await moveFile(pathToFile, pathToNewDir);
         break;
       }
@@ -62,13 +70,13 @@ export const controller = async(line) => {
       }
       case 'compress': {
         const pathToFile = args[0];
-        const pathToDestination = args[1];
+        const pathToDestination = parsePath(args[1]);
         await compressFile(pathToFile, pathToDestination, 'compress');
         break;
       }
       case 'decompress': {
         const pathToFile = args[0];
-        const pathToDestination = args[1];
+        const pathToDestination = parsePath(args[1]);
         await compressFile(pathToFile, pathToDestination, 'decompress');
         break;
       }
@@ -81,9 +89,9 @@ export const controller = async(line) => {
     }
   } catch (error) {
     if (error.message === INVALID_INPUT) {
-      return process.stdout.write(INVALID_INPUT);
+      return process.stdout.write(coloredOutput(INVALID_INPUT, colors.magenta));
     } else {
-      return process.stdout.write(OPERATION_FAILED);
+      return process.stdout.write(coloredOutput(OPERATION_FAILED, colors.red));
     }
   }
 }

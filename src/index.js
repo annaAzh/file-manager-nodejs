@@ -3,6 +3,7 @@ import { greetingUser } from './utils/args.js';
 import {changeCurrentDir} from './utils/homeDir.js'
 import {getCurrentWorkingDir} from './utils/currentDir.js';
 import {controller} from './controller.js';
+import { coloredOutput, colors } from './utils/coloredOutput.js';
 
 const startFileMasnager = () => {
 
@@ -15,9 +16,9 @@ const startFileMasnager = () => {
   changeCurrentDir();
 
   
-  rl.on('line', (line) => {
-      controller(line);
-      process.stdout.write(`You are currently in ${getCurrentWorkingDir()}\n`)
+  rl.on('line', async (line) => {
+      await controller(line);
+      process.stdout.write(coloredOutput(`You are currently in ${getCurrentWorkingDir()}`, colors.yellow));
   });
   
   rl.on('SIGINT', () => {

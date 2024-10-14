@@ -1,5 +1,11 @@
-import { access, constants } from 'fs/promises';
+import { access, constants, lstat } from 'fs/promises';
 
 export const isExistDirectory = async (path) => {
-  return await access(path, constants.R_OK).then(() => true).catch(() => false);
+  try {
+    await access(path, constants.R_OK);
+    const stats = await lstat(path);
+    return stats.isDirectory();
+  } catch {
+    return false;
+  }
 }

@@ -6,6 +6,7 @@ import { isExistDirectory } from '../utils/checkIsDirectory.js';
 import { promisify } from 'util';
 import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream';
+import { coloredOutput, colors } from '../utils/coloredOutput.js';
 
 const promisifiedPipeline = promisify(pipeline);
 const COMPRESS_EXTENSION = '.br';
@@ -29,7 +30,7 @@ export const compressFile = async(pathToFile, pathToDestination, flag = 'compres
     const writeStream = createWriteStream(resolve(resolvedPathTo, fileName));
 
     await promisifiedPipeline(readStream, compressionOperation, writeStream);
-    
+    process.stdout.write(coloredOutput(`File was ${flag}ed`, colors.green));
   } catch (error) {
     throw new Error(OPERATION_FAILED);
   }

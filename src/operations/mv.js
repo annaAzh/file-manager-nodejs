@@ -6,9 +6,9 @@ import { isExistFile } from '../utils/checkisExistFile.js';
 import { isExistDirectory } from '../utils/checkIsDirectory.js';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
+import { coloredOutput, colors } from '../utils/coloredOutput.js';
 
 export const moveFile = async (pathToFile, pathToNewDir) => {
-
   const promisifiedPipeline = promisify(pipeline);
 
   try {
@@ -20,11 +20,14 @@ export const moveFile = async (pathToFile, pathToNewDir) => {
 
     const fileName = basename(resolvedPath);
 
+    const destinationPath = resolve(directorePath, fileName);
     const readStream = createReadStream(resolvedPath);
-    const writeStream = createWriteStream(resolve(directorePath, fileName));
-    const removeFile  = await rm(resolvedPath);
+    const writeStream = createWriteStream(resolve(destinationPath));
+    
+    await promisifiedPipeline(readStream, writeStream);
 
-    await promisifiedPipeline(readStream, writeStream, removeFile);
+    await rm(resolvedPath);
+    process.stdout.write(coloredOutput(`File was moved`, colors.green));
   
   } catch {
     throw new Error(OPERATION_FAILED);
